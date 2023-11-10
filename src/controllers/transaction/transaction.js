@@ -15,7 +15,7 @@ export const initiatePayment = async (req, res) => {
     // const fetchData = await wallet.findOne({ user_id:userId });
 
     // if (fetchData != null) {
-      var total_balance = fetchData.total_balance + amount;
+    //   var total_balance = fetchData.total_balance + amount;
       var type = "RAZ";
       const date = new Date();
       const result = date.getTime();
@@ -29,32 +29,32 @@ export const initiatePayment = async (req, res) => {
         receipt: `order_rcptid_${result}`,
       };
 
-    await instance.orders.create(options, async (err, order) => {
-        if (err) {
-            // console.log(err);
-            return res.send({
-                status_code: false,
-                message: 'Error creating Razorpay order',
-            });
-        }
-        // console.log(order)
-        await Payments.updateOne(
-            { receipt: order.receipt },
-            {
-                $set: {
-                    order_id: order.id,
-                    entity: order.entity,
-                    amount,
-                    receipt: order.receipt,
-                    status: order.status,
-                    user_id,
-                    coupon_code,
-                },
+      const order = await new Promise((resolve, reject) => {
+        instance.orders.create(options, (err, order) => {
+            if (err) {
+                console.error(err);
+                reject('Error creating Razorpay order');
+            } else {
+                resolve(order);
+            }
+        });
+    });
+    console.log(order)
+    await Payments.updateOne(
+        { receipt: order.receipt },
+        {
+            $set: {
+                order_id: order.id,
+                entity: order.entity,
+                amount,
+                receipt: order.receipt,
+                status: order.status,
+                user_id:userId,
             },
-            { upsert: true },
-        );
-
-
+        },
+        { upsert: true },
+    );
+    
       var data = { key_id: raz_key_id, key_secret: raz_key_secret };
       res.send({
         status_code: true,
