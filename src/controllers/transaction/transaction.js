@@ -54,7 +54,7 @@ export const initiatePayment = async (req, res) => {
         },
         { upsert: true },
     );
-    
+
       var data = { key_id: raz_key_id, key_secret: raz_key_secret };
       res.send({
         status_code: true,
@@ -91,8 +91,7 @@ export const verifyPayment = async (req, res) => {
 
             const walletDetail = await wallet.findOne({ user_id });
 
-            await Promise.all([
-                wallet.updateOne(
+                await wallet.updateOne(
                     { user_id },
                     {
                         $set: {
@@ -100,7 +99,7 @@ export const verifyPayment = async (req, res) => {
                         },
                     }
                 ),
-                Transaction.create({
+                await Transaction.create({
                     user_id,
                     description: "razorpay payment",
                     point_type: "RAZ",
@@ -109,8 +108,8 @@ export const verifyPayment = async (req, res) => {
                     amount,
                     transaction_type: "add",
                     state: "Delhi",
-                }),
-            ]);
+                })
+                
         } else {
             await Payments.updateOne({ receipt: req.body.receipt }, { $set: { status: "failure" } });
         }
