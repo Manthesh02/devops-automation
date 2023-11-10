@@ -1,31 +1,35 @@
 import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema({
-  userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-  fromCountry: {
+user_id: {
     type: String,
-    required: true,
-  },
-  toCountry: {
+},
+description: {
     type: String,
-    required: true,
-  },
-  transactionType: {
+},
+invoice_number: {
     type: String,
-    required: true,
-  },
-  amount: {
+},
+amount: {
     type: Number,
-    required: true,
-  },
-  amountType: {
+},
+transaction_type: {
     type: String,
-    required: true,
-  },
-});
+},
+point_type: {
+    type: String,
+},
+transaction_id: {
+    type: String,
+    default: 'NA',
+},
+state: {
+    type: String,
+},
+state: {
+    type: String,
+}
+},{ timestamps: true });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
 

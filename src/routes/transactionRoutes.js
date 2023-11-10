@@ -1,10 +1,10 @@
 import express from "express";
-import {getTransactions,postTransaction} from "../controllers/controllers.js";
+import {initiatePayment,verifyPayment} from "../controllers/controllers.js";
 import{verifyToken} from "../middlewares/auth.js"
 const router = express.Router();
 
-router.post("/createTransaction",verifyToken,postTransaction);
+router.post("/createTransaction",verifyToken,initiatePayment);
 
-router.get("/getTransactions",verifyToken,getTransactions);
+router.get("/getTransactions",verifyToken,verifyPayment);
 
 export default router;
