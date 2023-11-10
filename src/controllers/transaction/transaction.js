@@ -2,18 +2,19 @@ import Transaction from "../../models/Transaction.js";
 import Payments from "../../models/Payment.js";
 import wallet from "../../models/Wallet.js";
 import Razorpay from "razorpay";
-import("dotenv").config();
 const { raz_key_id, raz_key_secret } = process.env;
 import crypto from "crypto";
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const initiatePayment = async (req, res) => {
   try {
     let amount = parseInt(req.query.amount);
     const { userId } = req.user;
 
-    const fetchData = await wallet.findOne({ user_id:userId });
+    // const fetchData = await wallet.findOne({ user_id:userId });
 
-    if (fetchData != null) {
+    // if (fetchData != null) {
       var total_balance = fetchData.total_balance + amount;
       var type = "RAZ";
       const date = new Date();
@@ -28,30 +29,31 @@ export const initiatePayment = async (req, res) => {
         receipt: `order_rcptid_${result}`,
       };
 
-      const order = await new Promise((resolve, reject) => {
-        instance.orders.create(options, (err, order) => {
-          if (err) {
-            reject("Error creating Razorpay order");
-          } else {
-            resolve(order);
-          }
-        });
-      });
+    await instance.orders.create(options, async (err, order) => {
+        if (err) {
+            // console.log(err);
+            return res.send({
+                status_code: false,
+                message: 'Error creating Razorpay order',
+            });
+        }
+        // console.log(order)
+        await Payments.updateOne(
+            { receipt: order.receipt },
+            {
+                $set: {
+                    order_id: order.id,
+                    entity: order.entity,
+                    amount,
+                    receipt: order.receipt,
+                    status: order.status,
+                    user_id,
+                    coupon_code,
+                },
+            },
+            { upsert: true },
+        );
 
-      await Payments.updateOne(
-        { receipt: order.receipt },
-        {
-          $set: {
-            order_id: order.id,
-            entity: order.entity,
-            amount,
-            receipt: order.receipt,
-            status: order.status,
-            user_id:userId,
-          },
-        },
-        { upsert: true }
-      );
 
       var data = { key_id: raz_key_id, key_secret: raz_key_secret };
       res.send({
@@ -59,7 +61,7 @@ export const initiatePayment = async (req, res) => {
         order,
         data,
       });
-    }
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).json("Something went wrong. Please try again");
