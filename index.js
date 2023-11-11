@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./src/routes/authRoutes.js";
 import transactionRoutes from "./src/routes/transactionRoutes.js";
+import paymentRoutes from "./src/routes/paymentRoutes.js";
 import connectToMongoDB from "./db.js";
 import Transaction from "./src/models/Transaction.js";
 dotenv.config();
@@ -20,7 +21,7 @@ connectToMongoDB();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transaction",transactionRoutes);
-
+app.use('/payment', paymentRoutes);
 
 const server = https.createServer(app);
 
