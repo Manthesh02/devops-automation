@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const dbURL ='mongodb://admin-user:aCce55denied@98.70.37.41:27017/?tls=false';
+const dbURL ='mongodb://admin-user:test123@54.85.70.87:27017/?tls=false';
 
 const connectToMongoDB = async () => {
   try {
