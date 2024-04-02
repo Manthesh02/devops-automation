@@ -1,11 +1,8 @@
----
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: backend
   namespace: default
-  labels:
-    app: backend
 spec:
   replicas: 1
   selector:
@@ -18,12 +15,13 @@ spec:
     spec:
       containers:
       - name: backend
-        image: "manthesh/backend"
+        image: manthesh/backend
         ports:
-          - containerPort: 5003
+        - containerPort: 5003
         env:
-          - name: MONGODB_HOST
-            value: "mongodb://admin:admin123@54.213.133.51:27017/?tls=false"   # Update this with your MongoDB connection string
+        - name: MONGODB_HOST
+          value: "mongodb://admin:admin123@54.213.133.51:27017/?tls=false"   # Update this with your MongoDB connection string
+
 ---
 apiVersion: v1
 kind: Service
