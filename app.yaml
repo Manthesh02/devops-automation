@@ -1,7 +1,11 @@
-apiVersion: apps/v1
+---
 kind: Deployment
+apiVersion: apps/v1
 metadata:
-  name: nodejs-app
+  name: backend
+  namespace: default
+  labels:
+    app: backend
 spec:
   replicas: 1
   selector:
@@ -13,22 +17,24 @@ spec:
         app: backend
     spec:
       containers:
-        - name: backend 
-          image: manthesh/backend
-          ports:
-            - containerPort: 5003
-          env:
-            - name: MONGODB_HOST
-              value: "mongodb://admin:admin123@54.213.133.51:27017/?tls=false"   # Update this with your MongoDB connection string
+      - name: backend
+        image: "manthesh/backend"
+        ports:
+          - containerPort: 5003
+        env:
+          - name: MONGODB_HOST
+            value: "mongodb://admin:admin123@54.213.133.51:27017/?tls=false"   # Update this with your MongoDB connection string
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: backend
+  namespace: default
 spec:
   selector:
     app: backend
+  type: LoadBalancer
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5003
+  - name: http
+    port: 8080
+    targetPort: 5003
