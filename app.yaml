@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend 
+          image: manthesh/backend
+          ports:
+            - containerPort: 5003
+          env:
+            - name: MONGODB_HOST
+              value: "mongodb://admin:admin123@54.213.133.51:27017/?tls=false"   # Update this with your MongoDB connection string
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5003
