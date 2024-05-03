@@ -1,0 +1,37 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: Java-app
+  namespace: default
+  labels:
+    app: Java-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: Java-app
+  template:
+    metadata:
+      labels:
+        app: Java-app
+    spec:
+      containers:
+      - name: nodejs-app
+        image: "manthesh/java-app-1.0"
+        ports:
+          - containerPort: 9001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: manthesh/java-app-1.0
+  namespace: default
+spec:
+  selector:
+    app: manthesh/java-app-1.0
+  type: LoadBalancer
+  ports:
+  - name: http
+    targetPort: 9001
+    port: 8090
