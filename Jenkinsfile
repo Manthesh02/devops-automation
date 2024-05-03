@@ -70,9 +70,9 @@ pipeline {
             steps {
                 script {
                     // Load kubeconfig as a file credential
-                    withCredentials([file(credentialsId: 'Kubeconfig', variable: 'Kubeconfig')]) {
+                    withCredentials([file(credentialsId: 'Kubeconfig', variable: 'config')]) {
                         // Ensure that the 'app.yaml' file is present in your repository or Jenkins workspace 
-                        sh 'kubectl --kubeconfig=$kubeconfig apply -f app.yaml'
+                        sh 'kubectl --kubeconfig=$config apply -f app.yaml'
                     }
                 }
             }
