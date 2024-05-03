@@ -25,7 +25,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the main branch of the GitHub repository using SSH
-                git branch: 'main', credentialsId: 'jenkins', url: 'git@github.com:Manthesh02/Publish.git'
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'd5a98037-9aae-4de5-a2a9-6e102c36aab7', url: 'git@github.com:Manthesh02/Publish.git']])
             }
         }
 
