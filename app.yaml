@@ -2,22 +2,22 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: Java-app
+  name: java-app
   namespace: default
   labels:
-    app: Java-app
+    app: java-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: Java-app
+      app: java-app
   template:
     metadata:
       labels:
-        app: Java-app
+        app: java-app
     spec:
       containers:
-      - name: nodejs-app
+      - name: java-app
         image: "manthesh/java-app-1.0"
         ports:
           - containerPort: 9001
